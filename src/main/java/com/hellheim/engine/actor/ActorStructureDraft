@@ -1,0 +1,38 @@
+com.hellheim.engine.actor
+│
+├── combat/
+│   ├── Position.java             [Record] (Posición X, Y, Dirección)
+│   └── (Más clases de combate...)
+│
+├── ActorView.java                [Interfaz Sellada] (¡La clave!)
+│                                 // El contrato "caliente" para CUALQUIER
+│                                 // cosa viva en el mapa.
+│                                 // (uniqueId, position, currentHp, profile)
+│
+├── BaseProfile.java              [Interfaz] (¡La otra clave!)
+│                                 // El contrato "calculado" para CUALQUIER
+│                                 // ficha de personaje/monstruo.
+│                                 // (maxHp, maxSp, atk, def, flee, hit...)
+│
+├── PlayerData.java               [Record]
+│                                 // Los "Datos Fuente" solo del jugador
+│                                 // (stats base, equipo, inventario)
+│
+├── PlayerProfile.java            [Record] (implementa BaseProfile)
+│                                 // La "Ficha de Stats" calculada del jugador.
+│
+├── PlayerActorView.java          [Record] (permits ActorView)
+│                                 // La "Cáscara Viva" del jugador.
+│                                 // Contiene: PlayerData y PlayerProfile.
+│
+├── MonsterData.java              [Record]
+│                                 // Los "Datos Fuente" del monstruo
+│                                 // (monsterDbId, spawnPoint, stats base del DB)
+│
+├── MonsterProfile.java           [Record] (implementa BaseProfile)
+│                                 // La "Ficha de Stats" calculada del monstruo.
+│                                 // (Puede ser muy simple, solo lee de MonsterData)
+│
+└── MonsterActorView.java         [Record] (permits ActorView)
+                                  // La "Cáscara Viva" del monstruo.
+                                  // Contiene: MonsterData y MonsterProfile.

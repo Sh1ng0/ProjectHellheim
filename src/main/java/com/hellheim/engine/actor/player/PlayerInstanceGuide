@@ -1,0 +1,96 @@
+¿Cómo se instancia un jugador?
+La confusión viene porque nos falta una "pieza" que una todo esto. Los records (PlayerData, PlayerProfile, PlayerActorView) son solo datos. Necesitamos un Gestor de Estado (un State Manager).
+
+En nuestro diseño, este gestor será una clase normal, llamémosla Player.
+
+El proceso de instanciación (cuando un jugador entra al mundo) ocurre en estos pasos:
+
+Paso 1: La Carga (Crear PlayerData - Datos Fuente)
+El LoginService recibe la petición de un jugador.
+
+Busca en la base de datos usando el long id (ej. 1001).
+
+Carga la información "fuente": stats base (ej. 50 STR, 30 AGI), el ID de su job, su nivel, etc.
+
+Con esto, instancia el primer record: PlayerData playerData = characterRepository.loadPlayerData(1001);.
+
+(En este playerData también irían sus CharacterEquipment y sus CharacterInventories, que aún no hemos modelado).
+
+Paso 2: El Cálculo (Crear PlayerProfile - Datos Fríos)
+Ahora tenemos los datos "fuente", pero no las estadísticas calculadas (MaxHP, ATK, DEF, etc.).
+
+Llamamos al servicio stateless que sabe hacer esto: StatCalculatorService.
+
+Instanciamos el segundo record: PlayerProfile playerProfile = statCalculatorService.calculateFullProfile(playerData);.
+
+Este servicio mira playerData.baseStats, playerData.equipment, etc., y calcula el totalStats, maxHp, attack, etc., devolviendo un PlayerProfile nuevecito.
+
+Paso 3: La "Encarnación" (Crear PlayerActorView - Datos Calientes)
+El jugador está listo para "spawnear" en el mundo.
+
+El MapManager le asigna una posición (ej. Position.ZERO en Prontera) y un nuevo UUID único.
+
+Instanciamos el tercer record:
+
+Java
+
+// Esto es pseudocódigo conceptual
+UUID newSessionId = UUID.randomUUID();
+Position spawnPosition = mapManager.getSpawnPoint("prontera");
+
+PlayerActorView playerView = new PlayerActorView(
+    newSessionId,
+    spawnPosition,
+    playerProfile.maxHp(),  // HP al máximo
+    playerProfile.maxSp(),  // SP al máximo
+    playerProfile,          // El perfil frío que acabamos de calcular
+    playerData,             // Los datos fuente que cargamos
+    0L                      // nextActionTick (listo para actuar)
+);
+Paso 4: El Gestor (La clase Player)
+Aquí está la pieza que te falta: creamos una clase Player (que no es un record). Esta clase contiene el estado actual.
+
+Java
+
+// ESTO ES SOLO UN CONCEPTO, NO EL CÓDIGO FINAL
+public class Player {
+
+    // El estado "caliente" es el único que cambia tick a tick
+    private PlayerActorView currentView;
+
+    // Los servicios stateless que usará para la lógica
+    private final StatCalculatorService statService;
+    private final EquipmentService equipService;
+
+    // El constructor recibe el estado inicial
+    public Player(PlayerActorView initialView, StatCalculatorService statSvc, EquipmentService equipSvc) {
+        this.currentView = initialView;
+        this.statService = statSvc;
+        this.equipService = equipSvc;
+    }
+
+    // Un método para que el resto del mundo vea nuestro estado
+    public ActorView getView() {
+        return this.currentView;
+    }
+
+    // Un método que MUTA EL ESTADO
+    public void takeDamage(int amount) {
+        int newHp = this.currentView.currentHp() - amount;
+
+        // ¡Aquí usamos @RecordBuilder!
+        // Creamos una NUEVA instancia inmutable de la vista.
+        this.currentView = this.currentView.withCurrentHp(newHp);
+    }
+}
+Esta clase Player es la que se guarda en el MapManager (ej. Map<UUID, Player> actorsOnMap).
+
+En resumen:
+
+Cargas PlayerData (fuente) de la DB.
+
+Calculas PlayerProfile (frío) usando un servicio.
+
+Instancias PlayerActorView (caliente) para el "spawn".
+
+Envuelves todo en una clase Player (gestor) que usa los .with...() para actualizar su estado interno.
