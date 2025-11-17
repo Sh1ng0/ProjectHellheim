@@ -23,12 +23,13 @@ public record Position(
     /**
      * Calcula la distancia (simplificada) a otra posición.
      */
+    // Usaremos tiles
     public int distanceTo(Position other) {
         if (!this.mapId.equals(other.mapId)) {
-            return Integer.MAX_VALUE; // No están en el mismo mapa
+            return Integer.MAX_VALUE; // Si da infinito, imposible que sea el mismo mapa
         }
         int dx = Math.abs(this.x - other.x);
         int dy = Math.abs(this.y - other.y);
-        return Math.max(dx, dy); // Distancia Chebyshev (coste de movimiento en RO)
+        return Math.max(dx, dy); // Distancia Chebyshev
     }
 }

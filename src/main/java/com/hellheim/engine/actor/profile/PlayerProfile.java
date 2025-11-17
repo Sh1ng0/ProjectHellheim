@@ -1,5 +1,6 @@
 package com.hellheim.engine.actor.profile;
 
+import com.hellheim.engine.Stance.Stance;
 import com.hellheim.engine.actor.PlayerProfileBuilder;
 import io.soabase.recordbuilder.core.RecordBuilder;
 
@@ -18,10 +19,6 @@ import java.util.Map;
 @RecordBuilder
 public record PlayerProfile(
 
-        // This will live in a "PlayerData" record
-//        CharacterEquipment equipment,
-//        CharacterInventories inventories,
-//        List<CardEffect> cardEffects
 
         // Basic Identifiers
         long id,
@@ -52,7 +49,10 @@ public record PlayerProfile(
         Flee flee,
 
         // Skills
-        Map<String, Integer> availableSkills
+        Map<String, Integer> availableSkills,
+
+        // Stance
+        Stance stance
 
 ) implements BaseProfile, PlayerProfileBuilder.With {
     // Nota: Añadimos "PlayerProfileBuilder.With" para que el método with()

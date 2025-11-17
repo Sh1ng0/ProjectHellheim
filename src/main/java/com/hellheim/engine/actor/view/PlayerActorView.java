@@ -39,6 +39,8 @@ public record PlayerActorView(
          */
         long nextActionTick
 
+        // Sheathing / Unsheathing stuff goes here
+
         // Map<StatusEffect, Long> activeStatusEffects // (Lo añadiremos)
 
 ) implements ActorView, PlayerActorViewBuilder.With {

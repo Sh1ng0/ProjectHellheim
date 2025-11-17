@@ -1,0 +1,57 @@
+package com.hellheim.engine.job;
+
+
+import com.hellheim.engine.stat.StatBlock;
+
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
+
+/**
+ * Implementación del Job "Novice".
+ * Hereda todos los valores por defecto de la clase Job,
+ * ya que un Novice no tiene bonus de stats.
+ */
+public class Novice extends Job {
+
+    @Override
+    public String getId() {
+        return "NOVICE";
+    }
+
+    @Override
+    public String getJobName() {
+        return "Novice";
+    }
+
+    @Override
+    protected Map<Integer, StatBlock> getJobBonusSchedule() {
+        return Map.of();
+    }
+
+    // ASPD
+
+    @Override
+    public double getBaseAttackDelaySeconds() {
+        return 1.3;
+    }
+
+    @Override
+    public boolean canDualWield() {
+        return false;
+    }
+
+
+
+    // Job path
+
+    @Override
+    public JobTier getJobTier() {
+        return JobTier.NOVICE;
+    }
+
+    @Override
+    public List<String> getPreviousJobIds() {
+        return Collections.emptyList();
+    }
+}
