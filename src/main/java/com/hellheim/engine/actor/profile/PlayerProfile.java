@@ -1,7 +1,7 @@
 package com.hellheim.engine.actor.profile;
 
 import com.hellheim.engine.Stance.Stance;
-import com.hellheim.engine.actor.PlayerProfileBuilder;
+//import com.hellheim.engine.actor.PlayerProfileBuilder;
 import io.soabase.recordbuilder.core.RecordBuilder;
 
 import com.hellheim.engine.enums.Element;

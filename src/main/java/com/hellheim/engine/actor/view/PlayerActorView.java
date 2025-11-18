@@ -1,6 +1,6 @@
 package com.hellheim.engine.actor.view;
 
-import com.hellheim.engine.actor.PlayerActorViewBuilder;
+//import com.hellheim.engine.actor.PlayerActorViewBuilder;
 import com.hellheim.engine.actor.combat.Position;
 import com.hellheim.engine.actor.player.PlayerData;
 import com.hellheim.engine.actor.profile.BaseProfile;

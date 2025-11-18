@@ -1,7 +1,7 @@
 package com.hellheim.engine.actor.view;
 
 
-import com.hellheim.engine.actor.MonsterActorViewBuilder;
+
 import com.hellheim.engine.actor.combat.Position;
 
 import com.hellheim.engine.actor.monster.AIState;
